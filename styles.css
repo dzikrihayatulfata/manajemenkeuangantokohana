@@ -1,0 +1,425 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: #f8f9fa;
+    color: #2c3e50;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 4rem; /* Tambah padding bawah untuk keyboard virtual */
+    -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap biru di mobile */
+}
+
+/* === NAVIGASI === */
+.nav {
+    display: flex;
+    background: #1976D2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #1565c0;
+}
+
+.nav button {
+    flex: 1;
+    padding: 1.2rem 0.6rem; /* Lebih besar untuk touch */
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 1.05rem; /* Lebih besar di mobile */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 60px; /* Tap target lebih besar */
+}
+
+.nav button.active {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 -3px 0 #fff;
+}
+
+.nav button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* === PAGE CONTAINER === */
+.page {
+    display: none;
+    padding: 1rem;
+    max-width: 100%;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === CARD === */
+.card {
+    background: white;
+    margin: 1rem 0;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #1976D2;
+    font-weight: 600;
+}
+
+.card .amount {
+    font-size: 2rem; /* Sedikit lebih kecil agar fit di mobile */
+    font-weight: 700;
+    color: #2e7d32;
+    letter-spacing: -0.5px;
+}
+
+/* === TOKO SECTION === */
+.toko-section {
+    background: white;
+    margin: 1rem 0;
+    padding: 1.2rem; /* Kurangi padding di mobile */
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.toko-section h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #1976D2;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* === INPUT & SELECT === */
+input[type="date"],
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    padding: 1rem; /* Lebih besar untuk touch */
+    margin: 0.6rem 0;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.05rem; /* Lebih besar di mobile */
+    background: #fdfdfd;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #1976D2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+}
+
+/* === SALDO AKHIR === */
+.saldo-akhir {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    padding: 1.1rem;
+    border-radius: 12px;
+    font-size: 1.2rem; /* Sedikit lebih kecil */
+    font-weight: 700;
+    text-align: center;
+    margin: 1rem 0;
+    color: #1565c0;
+    border: 1px solid #90caf9;
+}
+
+/* === TOMBOL UTAMA === */
+button {
+    width: 100%;
+    padding: 1.2rem; /* Lebih besar untuk touch */
+    margin: 0.75rem 0;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 60px; /* Tap target lebih besar */
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+}
+
+button:hover {
+    background: #43a047;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(67, 160, 71, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* === TOMBOL DANGER === */
+button.danger {
+    background: #f44336;
+    box-shadow: 0 3px 8px rgba(244, 67, 54, 0.3);
+}
+
+button.danger:hover {
+    background: #e53935;
+    box-shadow: 0 5px 12px rgba(229, 57, 53, 0.4);
+}
+
+/* === TOMBOL KECIL (Aksi di Tabel) === */
+button.small {
+    width: auto;
+    padding: 0.7rem 1.3rem; /* Lebih besar untuk touch */
+    font-size: 0.95rem;
+    margin: 0.3rem 0.15rem;
+    border-radius: 8px;
+    min-height: 48px; /* Standar tap target */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+button.small.danger {
+    background: #f44336;
+}
+
+button.small.danger:hover {
+    background: #d32f2f;
+}
+
+/* === FORM SECTION === */
+#add-supplier,
+#add-tagihan {
+    background: white;
+    padding: 1.2rem; /* Kurangi di mobile */
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+/* === TABEL RESPONSIF === */
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin: 1rem 0;
+    -webkit-overflow-scrolling: touch; /* Smooth scroll di iOS */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.95rem;
+    min-width: 600px; /* Force horizontal scroll jika terlalu lebar */
+}
+
+thead {
+    background: #1976D2;
+    color: white;
+}
+
+th, td {
+    padding: 0.9rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    min-width: 100px; /* Hindari kolom terlalu sempit di mobile */
+}
+
+th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody tr:hover {
+    background: #f5f9ff;
+}
+
+.overdue {
+    background: #ffebee !important;
+    border-left: 4px solid #f44336;
+}
+
+.sisa {
+    font-weight: 700;
+    color: #c62828;
+}
+
+/* === MODAL === */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 1.5rem; /* Kurangi padding di mobile */
+    border-radius: 16px;
+    width: 100%;
+    max-width: 90%; /* Lebih lebar di mobile */
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalPop 0.3s ease;
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* === TOMBOL DI MODAL === */
+.modal-content button {
+    margin: 0.6rem 0; /* Lebih besar spacing */
+}
+
+/* === INFO TREN === */
+#tren-pendapatan {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    border: 1px solid #a5d6a7;
+    color: #2e7d32;
+    font-weight: 600;
+    padding: 1rem; /* Tambah padding */
+    font-size: 1rem; /* Lebih besar */
+}
+
+/* === MEDIA QUERY - SMALL SCREENS (MOBILE) === */
+@media (max-width: 599px) {
+    body {
+        font-size: 16px; /* Base font lebih besar untuk readability */
+    }
+
+    .nav button {
+        font-size: 0.95rem;
+        padding: 1rem 0.4rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+
+    .card h2 {
+        font-size: 1rem;
+    }
+
+    .card .amount {
+        font-size: 1.8rem;
+    }
+
+    .toko-section {
+        padding: 1.2rem;
+    }
+
+    input, select {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    button {
+        font-size: 1.05rem;
+        padding: 1.2rem;
+        min-height: 60px;
+    }
+
+    button.small {
+        padding: 0.8rem 1.4rem;
+        font-size: 0.95rem;
+        min-height: 48px;
+    }
+
+    th, td {
+        padding: 0.8rem 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        max-height: 90vh;
+    }
+}
+
+/* === MEDIA QUERY - TABLET & DESKTOP === */
+@media (min-width: 600px) {
+    .page {
+        padding: 1.5rem;
+        max-width: 800px;
+    }
+
+    .card .amount {
+        font-size: 2.5rem;
+    }
+
+    .toko-section,
+    #add-supplier,
+    #add-tagihan {
+        padding: 2rem;
+    }
+
+    input, select {
+        padding: 1rem;
+    }
+
+    button {
+        padding: 1.1rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .page {
+        max-width: 900px;
+    }
+
+    .nav button {
+        font-size: 1.05rem;
+        padding: 1.2rem 1rem;
+    }
+}
+
+/* === SCROLLBAR CUSTOM (Opsional) === */
+::-webkit-scrollbar {
+    width: 10px; /* Lebih tebal untuk touch */
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

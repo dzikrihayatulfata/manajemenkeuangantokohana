@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keuangan Toko Hana</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <button onclick="showPage('dashboard')" class="active">Dashboard</button>
+        <button onclick="showPage('pendapatan')">Pendapatan</button>
+        <button onclick="showPage('pengeluaran')">Pengeluaran</button>
+    </nav>
+    <!-- Page 1: Dashboard -->
+    <div id="dashboard" class="page active">
+        <div class="card">
+            <h2>Total Penghasilan Toko</h2>
+            <div class="amount" id="total-pendapatan">Rp 0</div>
+        </div>
+        <div class="card">
+            <h2>Kewajiban Bayar</h2>
+            <div class="amount" id="total-kewajiban" style="color: #f44336;">Rp 0</div>
+        </div>
+        <div class="card">
+            <h2>Investasi Modal</h2>
+            <div class="amount" id="total-investasi">Rp 0</div>
+        </div>
+        <!-- Card: Total Penarikan Harian -->
+        <div class="card">
+            <h2>Penarikan Harian</h2>
+            <div class="amount" id="total-pembayaran-harian" style="color: #2196F3;">Rp 0</div>
+            <small style="color: #666; display: block; margin-top: 0.5rem;" id="tanggal-pembayaran-harian">Tanggal: - (Belum ada data hari ini)</small>
+        </div>
+        <!-- Tombol Refresh & Tren 12 Bulan -->
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+            <button onclick="refreshDashboard()" style="background: #2196F3; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Refresh Dashboard
+            </button>
+            <button id="btn-tren-12bulan" style="background: #4CAF50; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Lihat Tren 12 Bulan
+            </button>
+        </div>
+        <!-- Info Tren Pendapatan -->
+        <div id="tren-pendapatan" style="margin-top: 1.5rem; padding: 1rem; background: #e3f2fd; border-radius: 8px; text-align: center; color: #1976d2; font-size: 0.95rem;">
+            Memuat tren...
+        </div>
+    </div>
+    <!-- Page 2: Pendapatan -->
+    <div id="pendapatan" class="page">
+        <!-- Input Pendapatan Toko Hana 1 -->
+        <div class="toko-section">
+            <h3>Toko Hana 1</h3>
+            <input type="date" id="hana1-date" />
+            <input type="number" id="hana1-tunai" placeholder="Tunai (Rp)" oninput="calculateHana1()" />
+            <input type="number" id="hana1-nontunai" placeholder="Non Tunai (Rp)" oninput="calculateHana1()" />
+            <input type="number" id="hana1-pembayaran" placeholder="Penarikan (Rp)" oninput="calculateHana1()" />
+            <div class="saldo-akhir" id="hana1-saldo">Saldo Akhir: Rp 0</div>
+            <button onclick="simpanHana('hana1')">Simpan Hana 1</button>
+        </div>
+        <!-- Input Pendapatan Toko Hana 2 -->
+        <div class="toko-section">
+            <h3>Toko Hana 2</h3>
+            <input type="date" id="hana2-date" />
+            <input type="number" id="hana2-tunai" placeholder="Tunai (Rp)" oninput="calculateHana2()" />
+            <input type="number" id="hana2-nontunai" placeholder="Non Tunai (Rp)" oninput="calculateHana2()" />
+            <input type="number" id="hana2-pembayaran" placeholder="Penarikan (Rp)" oninput="calculateHana2()" />
+            <div class="saldo-akhir" id="hana2-saldo">Saldo Akhir: Rp 0</div>
+            <button onclick="simpanHana('hana2')">Simpan Hana 2</button>
+        </div>
+        <!-- Riwayat Pendapatan -->
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button id="btn-lihat-riwayat-pendapatan"
+                    style="background: #2196F3; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Lihat Riwayat Pendapatan Sebelumnya
+            </button>
+        </div>
+        <!-- Pinjaman Karyawan -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #fff8e1; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0; color: #ff8f00;">Pinjaman Karyawan</h3>
+            <!-- Tambah Pinjaman -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="nama-karyawan" placeholder="Nama Karyawan" style="margin-bottom: 0.5rem; width: 100%;" />
+                <input type="number" id="jumlah-pinjaman" placeholder="Jumlah Pinjaman (Rp)" style="margin-bottom: 0.5rem; width: 100%;" />
+                <input type="date" id="tgl-pinjaman" style="margin-bottom: 0.5rem; width: 100%;" />
+                <input type="text" id="keterangan-pinjaman" placeholder="Keterangan (opsional)" style="margin-bottom: 0.5rem; width: 100%;" />
+                <button onclick="tambahPinjaman()" style="background: #ff8f00; color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+                    Tambah Pinjaman
+                </button>
+            </div>
+            <!-- Bayar Cicilan -->
+            <div>
+                <select id="select-pinjaman" style="margin-bottom: 0.5rem; width: 100%;">
+                    <option value="">Pilih Pinjaman untuk Dibayar</option>
+                </select>
+                <input type="number" id="jumlah-cicilan" placeholder="Jumlah Cicilan (Rp)" style="margin-bottom: 0.5rem; width: 100%;" />
+                <input type="date" id="tgl-cicilan" style="margin-bottom: 0.5rem; width: 100%;" />
+                <button onclick="bayarCicilan()" style="background: #ff6f00; color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+                    Bayar Cicilan
+                </button>
+            </div>
+        </div>
+        <!-- Tombol Riwayat Pinjaman -->
+        <div style="margin-top: 1rem; text-align: center;">
+            <button id="btn-lihat-riwayat-pinjaman" style="background: #ff8f00; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Lihat Riwayat Pinjaman
+            </button>
+        </div>
+    </div>
+    <!-- Page 3: Pengeluaran -->
+    <div id="pengeluaran" class="page">
+        <!-- Tambah Supplier -->
+        <div id="add-supplier">
+            <h3>Tambah Supplier</h3>
+            <input type="text" id="pt-nama" placeholder="Nama PT / Supplier">
+            <input type="text" id="no-rek" placeholder="Nomor Rekening">
+            <input type="text" id="jenis-bank" placeholder="Jenis Bank (BCA, Mandiri, dll)">
+            <button onclick="tambahSupplier()">Tambah Supplier</button>
+        </div>
+        <!-- Tambah Tagihan -->
+        <div id="add-tagihan">
+            <h3>Tambah Tagihan</h3>
+            <select id="select-supplier">
+                <option value="">Pilih Supplier</option>
+            </select>
+            <select id="select-toko"
+                    style="margin-top: 0.5rem; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
+                <option value="">Pilih Toko</option>
+                <option value="hana1">Toko Hana 1</option>
+                <option value="hana2">Toko Hana 2</option>
+            </select>
+            <input type="text" id="no-faktur" placeholder="Nomor Faktur"
+                   style="margin-top: 0.5rem; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
+            <input type="date" id="tgl-kirim">
+            <input type="number" id="nominal" placeholder="Nominal (Rp)">
+            <input type="date" id="tgl-jatuh">
+            <button onclick="tambahTagihan()">Tambah Tagihan</button>
+        </div>
+        <!-- Tambah Investasi -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #e8f5e9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0; color: #4caf50;">Investasi Modal</h3>
+            <select id="toko-investasi" style="margin-bottom: 0.5rem; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
+                <option value="hana1">Toko Hana 1</option>
+                <option value="hana2">Toko Hana 2</option>
+            </select>
+            <input type="date" id="tgl-investasi" style="margin-bottom: 0.5rem; width: 100%;">
+            <input type="text" id="ket-investasi" placeholder="Keterangan" style="margin-bottom: 0.5rem; width: 100%;">
+            <input type="number" id="jumlah-investasi" placeholder="Jumlah (Rp)" style="margin-bottom: 0.5rem; width: 100%;">
+            <button onclick="simpanInvestasi()" style="background: #4caf50; color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+                Simpan Investasi
+            </button>
+        </div>
+        <!-- Riwayat Investasi -->
+        <div style="margin-top: 1.5rem;">
+            <h3>Riwayat Investasi</h3>
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #4caf50; color: white;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left;">Toko</th>
+                        <th style="padding: 0.75rem; text-align: left;">Tanggal</th>
+                        <th style="padding: 0.75rem; text-align: left;">Keterangan</th>
+                        <th style="padding: 0.75rem; text-align: right;">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody id="body-investasi"></tbody>
+            </table>
+        </div>
+        <!-- Tombol Hapus Semua Investasi -->
+        <div style="margin-top: 1rem; text-align: center;">
+            <button onclick="hapusSemuaInvestasi()"
+                    style="background: #d32f2f; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Hapus Semua Riwayat Investasi
+            </button>
+        </div>
+        <!-- Pengeluaran Operasional -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #fff3e0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0; color: #e65100;">Pengeluaran Operasional</h3>
+            <select id="select-toko-operasional" style="margin-bottom: 0.5rem; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
+                <option value="">Pilih Toko</option>
+                <option value="hana1">Toko Hana 1</option>
+                <option value="hana2">Toko Hana 2</option>
+            </select>
+            <input type="date" id="tgl-operasional" style="margin-bottom: 0.5rem; width: 100%;">
+            <input type="text" id="keterangan-operasional" placeholder="Keterangan (misal: listrik, gaji, sewa)" style="margin-bottom: 0.5rem; width: 100%;">
+            <input type="number" id="jumlah-operasional" placeholder="Jumlah (Rp)" style="margin-bottom: 0.5rem; width: 100%;">
+            <button onclick="simpanOperasional()" style="background: #e65100; color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+                Simpan Pengeluaran
+            </button>
+        </div>
+        <!-- Tombol Lihat Riwayat Operasional -->
+        <div style="margin-top: 1rem; text-align: center;">
+            <button id="btn-lihat-riwayat-operasional" style="background: #e65100; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Lihat Riwayat Operasional
+            </button>
+        </div>
+        <!-- Daftar Tagihan + Filter -->
+        <div id="list-suppliers" style="margin-top: 1rem;">
+            <h3>Daftar Tagihan</h3>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <select id="filter-supplier" onchange="renderSuppliers()" style="flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
+                    <option value="">Semua Supplier</option>
+                </select>
+                <input type="text" id="search-tagihan" placeholder="Cari Nomor Faktur..." onkeyup="renderSuppliers()" style="flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc;">
+            </div>
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #f44336; color: white;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left;">Toko</th>
+                        <th style="padding: 0.75rem; text-align: left;">Supplier</th>
+                        <th style="padding: 0.75rem; text-align: left;">No. Faktur</th>
+                        <th style="padding: 0.75rem; text-align: left;">Tgl Kirim</th>
+                        <th style="padding: 0.75rem; text-align: right;">Nominal</th>
+                        <th style="padding: 0.75rem; text-align: left;">Jatuh Tempo</th>
+                        <th style="padding: 0.75rem; text-align: right;">Sisa</th>
+                        <th style="padding: 0.75rem; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+                <tfoot id="tfoot-total" style="display: none; background: #ffebee;">
+                    <tr>
+                        <td colspan="6" style="padding: 0.75rem; font-weight: bold;">Total Sisa untuk <span id="total-supplier-name"></span></td>
+                        <td style="padding: 0.75rem; text-align: right; font-weight: bold; color: #f44336;" id="total-sisa-supplier">Rp 0</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p id="no-data" style="text-align: center; color: #999; margin-top: 1rem; display: none;">Belum ada tagihan</p>
+        </div>
+        <!-- Lihat Riwayat Pembayaran -->
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <button id="btn-lihat-riwayat"
+                    style="background: #2196F3; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                Lihat Riwayat Pembayaran
+            </button>
+        </div>
+        <!-- Hapus Semua Data -->
+        <button class="danger" onclick="hapusSemua()" style="margin-top: 1rem; width: 100%;">
+            Hapus Semua Data
+        </button>
+    </div>
+    <!-- Modal: Bayar Tagihan -->
+    <div id="modal-bayar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Bayar Supplier</h3>
+            <p id="modal-nama"></p>
+            <p>Sisa: <span id="modal-sisa"></span></p>
+            <p style="font-size: 0.9rem; color: #666; margin: 0.5rem 0;">
+                Laba Bersih Saat Ini: <strong id="modal-pendapatan">Rp 0</strong>
+            </p>
+            <input type="number" id="jumlah-bayar" placeholder="Jumlah bayar (Rp)" />
+            <!-- Upload Bukti -->
+            <div style="margin: 1rem 0;">
+                <label style="display:block; font-size:0.9rem; color:#555; margin-bottom:0.5rem;">
+                    Upload Bukti Pembayaran (opsional)
+                </label>
+                <input type="file" id="input-foto" accept="image/*" style="width:100%;" />
+                <div id="preview-foto" style="margin-top:0.5rem; max-height:150px; overflow:hidden; border-radius:8px; display:none;">
+                    <img id="img-preview" style="width:100%; height:auto; border-radius:8px;" />
+                </div>
+            </div>
+            <button onclick="konfirmasiBayar()">Bayar</button>
+            <button class="danger" onclick="tutupModal()">Batal</button>
+        </div>
+    </div>
+    <!-- Modal: Riwayat Pembayaran -->
+    <div id="modal-riwayat" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; max-height: 85vh; overflow-y: auto; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center; color: #2196F3;">Riwayat Pembayaran</h3>
+            <div style="margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                <input type="text" id="search-riwayat" placeholder="Cari Nomor Faktur..." style="padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; width: 250px;" onkeyup="renderRiwayatModal()" />
+                <button onclick="document.getElementById('search-riwayat').value=''; renderRiwayatModal()" style="padding: 0.5rem 1rem; background: #f44336; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                    Clear
+                </button>
+            </div>
+            <div id="riwayat-container">
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <thead style="background: #2196F3; color: white;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left;">Supplier</th>
+                            <th style="padding: 0.75rem; text-align: left;">Toko</th>
+                            <th style="padding: 0.75rem; text-align: left;">Tanggal</th>
+                            <th style="padding: 0.75rem; text-align: left;">No. Faktur</th>
+                            <th style="padding: 0.75rem; text-align: right;">Jumlah</th>
+                            <th style="padding: 0.75rem; text-align: center;">Bukti</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riwayat-body"></tbody>
+                </table>
+                <p id="no-riwayat" style="text-align:center; color:#666; margin-top: 1rem; display:none;">Belum ada riwayat pembayaran</p>
+                <div id="pagination" style="text-align: center; margin-top: 1rem;"></div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button onclick="hapusSemuaRiwayat()" style="background: #f44336; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                        Hapus Semua Riwayat Pembayaran
+                    </button>
+                </div>
+            </div>
+            <button onclick="tutupModalRiwayat()" style="width: 100%; padding: 0.75rem; background: #f44336; color: white; border: none; border-radius: 8px; margin-top: 1rem;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Modal: Riwayat Pendapatan -->
+    <div id="modal-riwayat-pendapatan" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; max-height: 85vh; overflow-y: auto; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center; color: #2196F3;">Riwayat Pendapatan</h3>
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #2196F3; color: white;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left;">Toko</th>
+                        <th style="padding: 0.75rem; text-align: left;">Tanggal</th>
+                        <th style="padding: 0.75rem; text-align: right;">Tunai</th>
+                        <th style="padding: 0.75rem; text-align: right;">Non Tunai</th>
+                        <th style="padding: 0.75rem; text-align: right;">Penarikan</th>
+                        <th style="padding: 0.75rem; text-align: right;">Saldo Akhir</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayat-pendapatan-body"></tbody>
+            </table>
+            <p id="no-riwayat-pendapatan" style="text-align:center; color:#666; margin-top: 1rem; display:none;">Belum ada riwayat pendapatan</p>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button onclick="hapusSemuaRiwayatPendapatan()" style="background: #f44336; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                    Hapus Semua Riwayat Pendapatan
+                </button>
+            </div>
+            <button onclick="tutupModalRiwayatPendapatan()" style="width: 100%; padding: 0.75rem; background: #f44336; color: white; border: none; border-radius: 8px; margin-top: 1rem;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Modal: Riwayat Operasional -->
+    <div id="modal-riwayat-operasional" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; max-height: 85vh; overflow-y: auto; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center; color: #e65100;">Riwayat Pengeluaran Operasional</h3>
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #e65100; color: white;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left;">Toko</th>
+                        <th style="padding: 0.75rem; text-align: left;">Tanggal</th>
+                        <th style="padding: 0.75rem; text-align: left;">Keterangan</th>
+                        <th style="padding: 0.75rem; text-align: right;">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayat-operasional-body"></tbody>
+            </table>
+            <p id="no-riwayat-operasional" style="text-align:center; color:#666; margin-top: 1rem; display:none;">Belum ada pengeluaran operasional</p>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button onclick="hapusSemuaOperasional()" style="background: #d32f2f; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                    Hapus Semua Riwayat Operasional
+                </button>
+            </div>
+            <button onclick="tutupModalRiwayatOperasional()" style="width: 100%; padding: 0.75rem; background: #d32f2f; color: white; border: none; border-radius: 8px; margin-top: 1rem;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Modal Riwayat Pinjaman -->
+    <div id="modal-riwayat-pinjaman" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; max-height: 85vh; overflow-y: auto; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center; color: #ff8f00;">Riwayat Pinjaman Karyawan</h3>
+            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead style="background: #ff8f00; color: white;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left;">Nama</th>
+                        <th style="padding: 0.75rem; text-align: left;">Tgl Pinjam</th>
+                        <th style="padding: 0.75rem; text-align: right;">Jumlah</th>
+                        <th style="padding: 0.75rem; text-align: right;">Sisa</th>
+                        <th style="padding: 0.75rem; text-align: center;">Cicilan</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayat-pinjaman-body"></tbody>
+            </table>
+            <p id="no-riwayat-pinjaman" style="text-align:center; color:#666; margin-top: 1rem; display:none;">
+                Belum ada pinjaman karyawan
+            </p>
+            <br>
+            <button onclick="document.getElementById('modal-riwayat-pinjaman').style.display='none'"
+                    style="width: 100%; padding: 0.75rem; background: #f44336; color: white; border: none; border-radius: 8px;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Modal Tren 12 Bulan -->
+    <div id="modal-tren-12bulan" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; max-height: 85vh; overflow-y: auto; padding: 1.5rem;">
+            <h3 style="margin-bottom: 1rem; text-align: center; color: #2196F3;">Grafik Pendapatan 12 Bulan Terakhir</h3>
+            <canvas id="chart12bulan" style="width: 100%; height: 340px;"></canvas>
+            <p id="no-data-chart" style="text-align:center; color:#666; margin-top: 1rem; display:none;">Belum ada data untuk grafik</p>
+            <button onclick="tutupModalTren12()" style="width: 100%; padding: 0.75rem; background: #f44336; color: white; border: none; border-radius: 8px; margin-top: 1rem;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>
